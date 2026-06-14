@@ -3,8 +3,8 @@ from torch import nn
 from transformers import AutoModel
 
 
-class BertPlotOriginEthnicityClassifier(nn.Module):
-    """Modele BERT pour classifier un Plot selon son Origin/Ethnicity."""
+class BerttweetTypeClassifier(nn.Module):
+    """Modele BERT pour classifier un tweet selon son type."""
 
     def __init__(self, num_labels, model_name="bert-base-uncased", dropout=0.3):
         # Initialise la classe parent de PyTorch.
@@ -20,7 +20,7 @@ class BertPlotOriginEthnicityClassifier(nn.Module):
         self.classifier = nn.Linear(self.bert.config.hidden_size, num_labels)
 
     def forward(self, input_ids, attention_mask, labels=None):
-        # Envoie les tokens du Plot dans BERT.
+        # Envoie les tokens du tweet dans BERT.
         outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
 
         # Recupère la représentation globale de la phrase.
@@ -41,7 +41,7 @@ class BertPlotOriginEthnicityClassifier(nn.Module):
 
 def create_model(num_labels, model_name="bert-base-uncased", dropout=0.3):
     # Cree et retourne une instance du modele de classification.
-    return BertPlotOriginEthnicityClassifier(
+    return BerttweetTypeClassifier(
         num_labels=num_labels,
         model_name=model_name,
         dropout=dropout,
