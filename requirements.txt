@@ -1,0 +1,6 @@
+torch
+transformers
+gradio
+pandas
+scikit-learn
+tqdm
