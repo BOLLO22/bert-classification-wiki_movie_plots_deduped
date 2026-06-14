@@ -1,4 +1,4 @@
-# BERT Classification - Plot vs Origin/Ethnicity
+# BERT Classification - tweet vs type
 
 Devoir Pratique n°3 - NLP avec PyTorch : Fine-tuning de BERT pour la classification de texte.
 
@@ -6,11 +6,11 @@ Devoir Pratique n°3 - NLP avec PyTorch : Fine-tuning de BERT pour la classifica
 
 ## 1. Présentation du dataset
 
-- **Source** : (https://drive.google.com/file/d/1nnZC_zAd-h-AQcetm3heZNAj6hpZVEzZ/view?usp=drive_link) (`wiki_movie_plots_deduped.csv`)
-- **Tâche** : classification du texte de la colonne `Plot` (résumé du film) selon la colonne `Origin/Ethnicity` (origine/ethnicité du film).
+- **Source** : (https://drive.google.com/file/d/1hMKWd8BAymWMo1YmhHeXYbEaKEL-YrGF/view) (`Train.csv`)
+- **Tâche** : classification du texte de la colonne `tweet`  selon la colonne `type` .
 - **Nombre total d'exemples** : _à compléter_
-- **Nombre de classes** : _à compléter_ (liste des valeurs uniques de `Origin/Ethnicity`)
-- **Distribution des classes** : _à compléter_ (le dataset est fortement déséquilibré : American/British/Indian dominent largement par rapport aux autres origines)
+- **Nombre de classes** : _à compléter_ (liste des valeurs uniques de `type`)
+- **Distribution des classes** : _largement par rapport aux autres origines)
   - **Stratégie adoptée** : _à compléter_ (ex. regroupement des classes minoritaires en "Other", sous-échantillonnage des classes majoritaires, ou poids de classes dans la loss)
 - **Longueur des textes (tokens)** : max = _..._,
   - Justification du `max_length` choisi : _à compléter_
@@ -21,7 +21,7 @@ Devoir Pratique n°3 - NLP avec PyTorch : Fine-tuning de BERT pour la classifica
 - **Modèle pré-entraîné** : `bert-base-uncased`
 - **Tokenizer** : `AutoTokenizer` / `BertTokenizer` de Hugging Face (`bert-base-uncased`)
 - **Tête de classification** : couche `Dropout` + `Linear(hidden_size, num_labels)` appliquée sur le `pooler_output` (représentation du token `[CLS]`)
-- **max_length** : 128 (ou 256, selon la statistique de longueur des `Plot`)
+- **max_length** : 128 (ou 256, selon la statistique de longueur des `tweet`)
 - **Hyperparamètres**
   - Learning rate : 2e-5 à 5e-5
   - Batch size : 16 ou 32
@@ -48,7 +48,7 @@ Devoir Pratique n°3 - NLP avec PyTorch : Fine-tuning de BERT pour la classifica
 ## 5. Démo Gradio
 
 - **Captures d'écran de la démo** : _insérer captures (ex. `results/demo_screenshot.png`)_
-- Description de l'interface : saisie d'un texte (Plot), affichage de la classe d'origine prédite et des probabilités par classe, avec exemples pré-remplis.
+- Description de l'interface : saisie d'un texte (tweet), affichage de la classe d'origine prédite et des probabilités par classe, avec exemples pré-remplis.
 
 ## 6. Installation et exécution
 
@@ -60,10 +60,10 @@ pip install -r requirements.txt
 
 ### Préparer les données
 
-Placer le fichier `wiki_movie_plots_deduped.csv` dans le dossier `data/` :
+Placer le fichier `Train.csv` dans le dossier `data/` :
 
 ```
-data/wiki_movie_plots_deduped.csv
+data/Train.csv
 ```
 
 ### Entraînement
@@ -85,11 +85,11 @@ L'interface Gradio est accessible sur `http://127.0.0.1:7860` (lien affiché dan
 ## 7. Structure du projet
 
 ```
-bert-classification-wiki-movie-plots/
+bert-classification-wiki-movie-tweets/
 ├── data/                  # dataset (non versionné, voir .gitignore)
-│   └── wiki_movie_plots_deduped.csv
-├── dataset.py             # PlotOriginEthnicityDataset + load_and_split_data
-├── model.py               # BertPlotOriginEthnicityClassifier + create_model
+│   └── Train.csv
+├── dataset.py             # tweetOriginEthnicityDataset + load_and_split_data
+├── model.py               # BerttweetOriginEthnicityClassifier + create_model
 ├── train.py               # boucles train_epoch / eval_epoch + main
 ├── demo.py                # interface Gradio
 ├── utils.py                # métriques, seed, visualisations
@@ -117,10 +117,10 @@ git add requirements.txt
 git commit -m "chore: ajoute requirements.txt"
 
 git add dataset.py
-git commit -m "feat: ajoute PlotOriginEthnicityDataset et load_and_split_data"
+git commit -m "feat: ajoute tweetOriginEthnicityDataset et load_and_split_data"
 
 git add model.py
-git commit -m "feat: ajoute BertPlotOriginEthnicityClassifier"
+git commit -m "feat: ajoute BerttweetOriginEthnicityClassifier"
 
 git add utils.py
 git commit -m "feat: ajoute fonctions utilitaires (seed, métriques, visualisations)"
@@ -134,7 +134,7 @@ git commit -m "feat: ajoute l'interface Gradio de démo"
 git add README.md
 git commit -m "docs: complète le README avec le rapport détaillé"
 
-git remote add origin <https://github.com/BOLLO22/bert-classification-wiki_movie_plots_deduped.git>
+git remote add origin <https://github.com/BOLLO22/bert-classification-wiki_movie_tweets_deduped.git>
 git push -u origin main
 ```
 
