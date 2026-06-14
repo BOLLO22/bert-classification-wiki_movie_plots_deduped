@@ -7,16 +7,16 @@ from sklearn.preprocessing import LabelEncoder
 from torch.utils.data import Dataset
 
 
-class PlotOriginEthnicityDataset(Dataset):
-    """Dataset PyTorch pour classifier la colonne `Plot` suivant `Origin/Ethnicity`."""
+class tweetTypeDataset(Dataset):
+    """Dataset PyTorch pour classifier la colonne `tweet` suivant `type`."""
 
     def __init__(
         self,
         dataframe,
         tokenizer,
         max_length=128,
-        text_column="Plot",
-        label_column="Origin/Ethnicity",
+        text_column="tweet",
+        label_column="type",
         label_encoder=None,
     ):
         # Verifie que les colonnes texte et label existent dans le dataframe.
@@ -39,7 +39,7 @@ class PlotOriginEthnicityDataset(Dataset):
         self.text_column = text_column
         self.label_column = label_column
 
-        # Transforme les labels texte de la colonne `Origin/Ethnicity` en nombres.
+        # Transforme les labels texte de la colonne `type` en nombres.
         if label_encoder is None:
             self.label_encoder = LabelEncoder()
             self.labels = self.label_encoder.fit_transform(
@@ -56,13 +56,13 @@ class PlotOriginEthnicityDataset(Dataset):
         return len(self.dataframe)
 
     def __getitem__(self, index):
-        # Recupère un Plot et son label a partir de son index.
-        Plot = str(self.dataframe.loc[index, self.text_column])
+        # Recupère un tweet et son label a partir de son index.
+        tweet = str(self.dataframe.loc[index, self.text_column])
         label = int(self.labels[index])
 
-        # Tokenise le Plot pour obtenir les entrees attendues par BERT.
+        # Tokenise le tweet pour obtenir les entrees attendues par BERT.
         encoding = self.tokenizer(
-            Plot,
+            tweet,
             add_special_tokens=True,
             max_length=self.max_length,
             padding="max_length",
@@ -79,9 +79,9 @@ class PlotOriginEthnicityDataset(Dataset):
         }
 
 
-def load_and_split_data(csv_path="data/wiki_movie_plots_deduped.csv",
-                         text_column="Plot",
-                         label_column="Origin/Ethnicity",
+def load_and_split_data(csv_path="data/Train.csv",
+                         text_column="tweet",
+                         label_column="type",
                          test_size=0.2,
                          random_state=42):
     """
