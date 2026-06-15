@@ -166,7 +166,7 @@ git commit -m " ajout de l'interface Gradio de démo"
 git add README.md
 git commit -m " ajout fichier README "
 
-git remote add origin <https://github.com/BOLLO22/bert-classification-Train.git>
+git remote add origin <https://github.com/BOLLO22/bert-classification-Train_tweet_type.git>
 git push -u origin main
 ```
 
