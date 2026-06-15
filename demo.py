@@ -70,8 +70,8 @@ interface = gr.Interface(
     outputs=gr.Label(num_top_classes=2),  # Affichage des meilleures probabilités
     title="Classification de Tweets avec BERT",
     description="Cette application utilise un modèle BERT fine-tune pour classifier le type d'un tweet.",
-    exemples=[
-        ["The government announced a new economic reform today."],
+    examples=[
+        ["My Husband Beats Me Frequently, Wife Tells Court."],
         ["The government announced a new economic reform today."]
     ] # Des exemples pré-remplis pour faciliter les tests
 )

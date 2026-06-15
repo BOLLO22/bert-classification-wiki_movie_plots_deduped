@@ -18,10 +18,12 @@ import torch
 torch.set_num_threads(1) 
 
 import pandas as pd
+import numpy as np
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from sklearn.utils.class_weight import compute_class_weight
 from tqdm import tqdm
 
 from dataset import tweetTypeDataset
@@ -55,6 +57,12 @@ def main():
     # Split train/validation (80% / 20%)
     train_df, val_df = train_test_split(df, test_size=0.2, random_state=42, stratify=df["type_encoded"])
 
+    # Calcul des poids des classes pour gérer le déséquilibre
+    classes = np.unique(train_df["type_encoded"])
+    weights = compute_class_weight(class_weight="balanced", classes=classes, y=train_df["type_encoded"])
+    class_weights_tensor = torch.tensor(weights, dtype=torch.float)
+    print(f"Poids des classes calculés : {class_weights_tensor}")
+
     # 3. Préparation du Tokenizer et des Datasets
     model_name = "bert-base-uncased"
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
@@ -68,7 +76,7 @@ def main():
     val_dataloader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
     # 4. Initialisation du modèle et de l'optimiseur
-    model = create_model(num_labels=num_labels, model_name=model_name)
+    model = create_model(num_labels=num_labels, model_name=model_name, class_weights=class_weights_tensor)
     model.to(device) # On envoie le modèle sur la carte graphique si disponible
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)

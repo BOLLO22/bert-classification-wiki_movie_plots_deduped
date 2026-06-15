@@ -6,7 +6,7 @@ from transformers import AutoModel
 class BerttweetTypeClassifier(nn.Module):
     """Modele BERT pour classifier un tweet selon son type."""
 
-    def __init__(self, num_labels, model_name="bert-base-uncased", dropout=0.3):
+    def __init__(self, num_labels, model_name="bert-base-uncased", dropout=0.3, class_weights=None):
         # Initialise la classe parent de PyTorch.
         super().__init__()
 
@@ -18,6 +18,9 @@ class BerttweetTypeClassifier(nn.Module):
 
         # Convertit la sortie de BERT en scores pour chaque classe.
         self.classifier = nn.Linear(self.bert.config.hidden_size, num_labels)
+        
+        # Poids des classes pour gérer le déséquilibre
+        self.class_weights = class_weights
 
     def forward(self, input_ids, attention_mask, labels=None):
         # Envoie les tokens du tweet dans BERT.
@@ -32,17 +35,23 @@ class BerttweetTypeClassifier(nn.Module):
         # Calcule la loss .
         loss = None
         if labels is not None:
-            loss_function = nn.CrossEntropyLoss()
+            if self.class_weights is not None:
+                # Assure que les poids sont sur le même device que les labels (GPU/MPS/CPU)
+                weights = self.class_weights.to(labels.device)
+                loss_function = nn.CrossEntropyLoss(weight=weights)
+            else:
+                loss_function = nn.CrossEntropyLoss()
             loss = loss_function(logits, labels)
 
         # Retourne la loss pour l'entrainement et les logits pour la prediction.
         return {"loss": loss, "logits": logits}
 
 
-def create_model(num_labels, model_name="bert-base-uncased", dropout=0.3):
+def create_model(num_labels, model_name="bert-base-uncased", dropout=0.3, class_weights=None):
     # Cree et retourne une instance du modele de classification.
     return BerttweetTypeClassifier(
         num_labels=num_labels,
         model_name=model_name,
         dropout=dropout,
+        class_weights=class_weights
     )
